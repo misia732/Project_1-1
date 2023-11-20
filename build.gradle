@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+mainClassName = 'project.gui.Test'
+
+javafx {
+    version = "20"
+    modules = ['javafx.controls']
+}
+
+repositories {
+    mavenCentral()
+}
