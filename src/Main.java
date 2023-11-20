@@ -89,7 +89,7 @@ public class Main {
             i = course index, where 1 = JTE-234, 2 = ATE-003, and so forth.
 
             */
-            for (int i = 1; i < 2; i++) {
+            for (int i = 1; i < 31; i++) {
                 System.out.println();
                 System.out.println("for course " + i);
                 System.out.println("----------------------------------------------");
@@ -97,7 +97,7 @@ public class Main {
                 // System.out.println(processValuesAverages(studentInfoArray, arrayCurrentGrades, "suruna value", "doot", i));
                 // processLalCount(studentInfoArray, arrayCurrentGrades, "high", i);
                 // processLalCount(studentInfoArray, arrayCurrentGrades, "low", i);
-                bestPrediction(studentInfoArray, arrayCurrentGrades, i, )
+                System.out.println(bestPrediction(studentInfoArray, arrayCurrentGrades, i, courseAverages(arrayCurrentGrades)));
             }
 
 
@@ -291,6 +291,30 @@ public class Main {
             return -1; // You can choose a different sentinel value if needed
         }
     }
+    public static double[] courseAverages(String[][] data) {  // !!!!!!!!!! Fixed here
+        double[] averages = new double[data[0].length - 1];
+        for (int j = 1; j < data[0].length; j++) {
+            double sum = 0;
+            int count = 0;
+            int ngCount = 0;  // !!!!!!!!!!
+            for (int i = 1; i < data.length; i++) {
+                if (data[i][j] != null && !data[i][j].isEmpty()) {
+                    if (data[i][j].equalsIgnoreCase("NG")) {
+                        ngCount++;  //!!!!!!!!!!
+                    } else {
+                        sum += Double.parseDouble(data[i][j]);
+                        count++;
+                    }
+                }
+            }
+            if (1.0 * ngCount / (ngCount + count) > 0.9) {  //!!!!!!!!!!
+                averages[j - 1] = -1;
+            } else {
+                averages[j - 1] = (count == 0) ? 0 : sum / count;
+            }
+        }
+        return averages;
+    }
 
     public static double processLalCount(String[][] studentInfo, String[][] grades, int courseIndex, double[] averages) {
 
@@ -389,6 +413,8 @@ public class Main {
 
         double[] variances = new double[4];
 
+        // SURUNA VALUE
+
         for (int j = 0; j <SurunaValue.length ; j++  ){
 
             avarageSurunaValue = processValuesAverages(studentInfo, grades, "Suruna Value", SurunaValue[j] ,courseIndex);
@@ -401,6 +427,8 @@ public class Main {
         variances[0] = varianceSuruna;
 
         System.out.println("The variance of SurunaValue: " + varianceSuruna);
+
+        // HURNI LEVEL
 
 
         for (int j = 0; j < HurniValue.length; j++){
@@ -416,7 +444,7 @@ public class Main {
 
         System.out.println("The variance of HurniValue: " + varianceHurni);
 
-
+        // VOLTA VALUE
 
         for (int j = 0; j < VoltaValue.length ; j++){
 
@@ -430,6 +458,8 @@ public class Main {
         variances[2] = varianceVolta;
 
         System.out.println("The variance of VoltaValue: "+ varianceVolta);
+
+        // LAL COUNT
 
         double varianceLal = processLalCount(studentInfo, grades , courseIndex,averages);
         variances[3] = varianceLal;
