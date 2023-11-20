@@ -97,7 +97,7 @@ public class Main {
                 // System.out.println(processValuesAverages(studentInfoArray, arrayCurrentGrades, "suruna value", "doot", i));
                 // processLalCount(studentInfoArray, arrayCurrentGrades, "high", i);
                 // processLalCount(studentInfoArray, arrayCurrentGrades, "low", i);
-                bestPrediction(studentInfoArray, arrayCurrentGrades, i, )
+                System.out.println(bestPrediction(studentInfoArray, arrayCurrentGrades, i, courseAverages(arrayCurrentGrades)));
             }
 
 
@@ -248,83 +248,84 @@ public class Main {
             return -1; // You can choose a different sentinel value if needed
         }
     }
+    public static double[] courseAverages(String[][] data) {  // !!!!!!!!!! Fixed here
+        double[] averages = new double[data[0].length - 1];
+        for (int j = 1; j < data[0].length; j++) {
+            double sum = 0;
+            int count = 0;
+            int ngCount = 0;  // !!!!!!!!!!
+            for (int i = 1; i < data.length; i++) {
+                if (data[i][j] != null && !data[i][j].isEmpty()) {
+                    if (data[i][j].equalsIgnoreCase("NG")) {
+                        ngCount++;  //!!!!!!!!!!
+                    } else {
+                        sum += Double.parseDouble(data[i][j]);
+                        count++;
+                    }
+                }
+            }
+            if (1.0 * ngCount / (ngCount + count) > 0.9) {  //!!!!!!!!!!
+                averages[j - 1] = -1;
+            } else {
+                averages[j - 1] = (count == 0) ? 0 : sum / count;
+            }
+        }
+        return averages;
+    }
 
-    public static double processLalCount(String[][] studentInfo, String[][] grades, int courseIndex, double[] averages) {
+    public static double processLalCount(String[][] studentInfo, String[][] grades, int parameter, int courseIndex) {
 
-        double courseAverage = getCourseAverage(averages,  courseIndex) ;
+        // Initializing variables
+        double avgScore = 0;
+        double avgScoreCount = 0;
+        double lalCount = 0;
+        double whichProperty = 0;
 
-        double lalCount=0;
-
-        double lowerthan70 = 0;
-        double between70and80=  0;
-        double between80and90=  0;
-        double between90and100= 0;
-
-        double lowerthan70count= 0;
-        double between70and80count=  0;
-        double between80and90count=  0;
-        double between90and100count= 0;
-
-        double avgScorelowerthan70count =0;
-        double avgScorebetween70and80count =0;
-        double avgScorebetween80and90count =0;
-        double avgScorebetween90and100count =0;
-
-        double LalCountsum=0;
-        double finalresult= 0;
-
+        if (parameter >= 59 && parameter <= 69) {
+            whichProperty = 1;
+        } else if (parameter >= 70 && parameter <= 79) {
+            whichProperty = 2;
+        } else if (parameter >= 80 && parameter <= 89) {
+            whichProperty = 3;
+        } else {
+            whichProperty = 4;
+        }
 
         // Looping over each students Lal count to categorize them
         for (int i = 1; i < studentInfo.length && studentInfo[i][0] != null; i++) {
             lalCount = Double.parseDouble(studentInfo[i][3]);
 
-            // Locate students score for ATE-003 course
+            // Locate students score for a course
             for (int j = 1; j < grades.length && grades[j][0] != null; j++) {
                 if (studentInfo[i][0].equals(grades[j][0])) {
                     // Check for ng
-                    if (!grades[j][courseIndex].equals("NG")) { // !!!!!!!!!!!!!!!!!!!!!!!!!!
+                    if (!grades[j][courseIndex].equals("NG")) {
                         double score = Double.parseDouble(grades[j][courseIndex]);
 
-                        if (lalCount <= 70) {
-                            lowerthan70 += score;
-                            lowerthan70count++;
-                        } else if (lalCount <= 80 && lalCount>70) {
-                            between70and80 += score;
-                            between70and80count++;
+                        if (whichProperty == 1 && lalCount >= 59 && lalCount <= 69) {
+                            avgScore += score;
+                            avgScoreCount++;
+                        } else if (whichProperty == 2 && lalCount >= 70 && lalCount <= 79) {
+                            avgScore += score;
+                            avgScoreCount++;
+                        } else if (whichProperty == 3 && lalCount >= 80 && lalCount <= 89) {
+                            avgScore += score;
+                            avgScoreCount++;
+                        } else if (whichProperty == 4 && lalCount >= 90 && lalCount <= 100) {
+                            avgScore += score;
+                            avgScoreCount++;
                         }
-                        else if (lalCount <= 90 && lalCount>80 ) {
-                            between80and90 += score;
-                            between80and90count++;
-                        }
-                        else if (lalCount <= 100 && lalCount>90) {
-                            between90and100 += score;
-                            between90and100count++;
-                        }
-
                     }
                 }
             }
         }
         //calculating final averages checks also if not dividing by 0
-        avgScorelowerthan70count = lowerthan70count != 0 ? lowerthan70 / lowerthan70count : 0;
-        avgScorebetween70and80count = between70and80count != 0 ? between70and80 / between70and80count : 0;
-        avgScorebetween80and90count = between80and90count != 0 ? between80and90 / between80and90count : 0;
-        avgScorebetween90and100count = between90and100count != 0 ? between90and100 / between90and100count : 0;
-
-        for (int j = 0; j < 4; j++){
-            double [] avgScore = {avgScorelowerthan70count,avgScorebetween70and80count,avgScorebetween80and90count,avgScorebetween90and100count};
-
-
-            double variance = courseAverage -  avgScore[j];
-
-            LalCountsum += variance;
-        }
-        finalresult = LalCountsum/4;
-
-        return Math.abs(finalresult);
+        double avgScoreLalCount = avgScoreCount != 0 ? avgScore / avgScoreCount : 0;
+        return avgScoreLalCount;
 
 
     }
+
     public static String bestPrediction(String[][] studentInfo, String[][] grades,int courseIndex, double[] averages) {
 
         double courseAverage = getCourseAverage(averages, courseIndex) ;
@@ -335,10 +336,13 @@ public class Main {
         double  avarageHurniValue = 0;
         String [] VoltaValue = {"1 star","2 stars","3 stars","4 stars","5 stars"};
         double avarageVoltaValue = 0;
+        double averageLalCount = 0;
+
 
         double SurunaValueSum=0;
         double HurniValueSum=0;
         double VoltaValueSum=0;
+        double lalCountSum = 0;
 
         double varianceSuruna= 0;
         double varianceHurni= 0;
@@ -346,49 +350,64 @@ public class Main {
 
         double[] variances = new double[4];
 
+        // SURUNA VALUE
+
         for (int j = 0; j <SurunaValue.length ; j++  ){
 
             avarageSurunaValue = processValuesAverages(studentInfo, grades, "Suruna Value", SurunaValue[j] ,courseIndex);
 
-            double variance = Math.abs(courseAverage - avarageSurunaValue);
+            double varianceReduction = Math.abs(courseAverage - avarageSurunaValue);
 
-            SurunaValueSum += variance;
+            SurunaValueSum += varianceReduction;
         }
         varianceSuruna = SurunaValueSum / SurunaValue.length;
         variances[0] = varianceSuruna;
 
         System.out.println("The variance of SurunaValue: " + varianceSuruna);
 
+        // HURNI LEVEL
+
 
         for (int j = 0; j < HurniValue.length; j++){
 
             avarageHurniValue = processValuesAverages(studentInfo, grades, "Hurni Level", HurniValue[j], courseIndex);
 
-            double variance = Math.abs(courseAverage - avarageHurniValue);
+            double varianceReduction = Math.abs(courseAverage - avarageHurniValue);
 
-            HurniValueSum += variance;
+            HurniValueSum += varianceReduction;
         }
         varianceHurni = HurniValueSum / HurniValue.length;
         variances[1] = varianceHurni;
 
         System.out.println("The variance of HurniValue: " + varianceHurni);
 
-
+        // VOLTA
 
         for (int j = 0; j < VoltaValue.length ; j++){
 
-            avarageVoltaValue = processValuesAverages(studentInfo, grades , "Volta Value", VoltaValue[j], courseIndex);
+            avarageVoltaValue = processValuesAverages(studentInfo, grades , "Volta", VoltaValue[j], courseIndex);
 
-            double variance = Math.abs(courseAverage - avarageVoltaValue);
+            double varianceReduction = Math.abs(courseAverage - avarageVoltaValue);
 
-            VoltaValueSum += variance;
+            VoltaValueSum += varianceReduction;
         }
         varianceVolta = VoltaValueSum / VoltaValue.length;
         variances[2] = varianceVolta;
 
         System.out.println("The variance of VoltaValue: "+ varianceVolta);
 
-        double varianceLal = processLalCount(studentInfo, grades , courseIndex,averages);
+        // LAL COUNT
+
+        for (int j = 59; j < 101 ; j += 11){
+
+            averageLalCount = processLalCount(studentInfo, grades, j, courseIndex);
+
+            double varianceReduction = Math.abs(courseAverage - averageLalCount);
+            System.out.println(varianceReduction);
+
+            lalCountSum += varianceReduction;
+        }
+        double varianceLal = lalCountSum / 4;
         variances[3] = varianceLal;
         System.out.println("The variance of lalCount: " + varianceLal);
 
@@ -414,12 +433,6 @@ public class Main {
 
 
 }
-
-
-
-
-
-
 
 
 
