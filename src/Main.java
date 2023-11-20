@@ -89,7 +89,7 @@ public class Main {
             i = course index, where 1 = JTE-234, 2 = ATE-003, and so forth.
 
             */
-            for (int i = 1; i < 31; i++) {
+            for (int i = 1; i < 2; i++) {
                 System.out.println();
                 System.out.println("for course " + i);
                 System.out.println("----------------------------------------------");
@@ -97,7 +97,7 @@ public class Main {
                 // System.out.println(processValuesAverages(studentInfoArray, arrayCurrentGrades, "suruna value", "doot", i));
                 // processLalCount(studentInfoArray, arrayCurrentGrades, "high", i);
                 // processLalCount(studentInfoArray, arrayCurrentGrades, "low", i);
-                System.out.println(bestPrediction(studentInfoArray, arrayCurrentGrades, i, courseAverages(arrayCurrentGrades)));
+                bestPrediction(studentInfoArray, arrayCurrentGrades, i, )
             }
 
 
@@ -233,49 +233,6 @@ public class Main {
 
     }
 
-    public static double processLalCount(String[][] studentInfo, String[][] grades, String parameter, int courseIndex) {
-
-        // Initializing variables
-        double upperQuartile = 0;
-        int upperQuartileCount = 0;
-        double lowerQuartile = 0;
-        int lowerQuartileCount = 0;
-        double lalCount = 0;
-
-        // Looping over each students Lal count to categorize them
-        for (int i = 1; i < studentInfo.length && studentInfo[i][0] != null; i++) {
-            lalCount = Double.parseDouble(studentInfo[i][3]);
-
-            // Locate students score for a course
-            for (int j = 1; j < grades.length && grades[j][0] != null; j++) {
-                if (studentInfo[i][0].equals(grades[j][0])) {
-                    // Check for ng
-                    if (!grades[j][courseIndex].equals("NG")) {
-                        double score = Double.parseDouble(grades[j][courseIndex]);
-
-                        if (lalCount >= 90) {
-                            upperQuartile += score;
-                            upperQuartileCount++;
-                        } else if (lalCount <= 59) {
-                            lowerQuartile += score;
-                            lowerQuartileCount++;
-                        }
-                    }
-                }
-            }
-        }
-        //calculating final averages checks also if not dividing by 0
-        double avgScoreUpperQuartile = upperQuartileCount != 0 ? upperQuartile / upperQuartileCount : 0;
-        double avgScoreLowerQuartile = lowerQuartileCount != 0 ? lowerQuartile / lowerQuartileCount : 0;
-
-
-        if (parameter.equalsIgnoreCase("High")) {
-            return avgScoreUpperQuartile;
-        } else {
-            return avgScoreLowerQuartile;
-        }
-    }
-
     public static double getCourseAverage(double[] averages, int courseIndex) {
         // Check if the courseIndex is valid
         if (courseIndex >= 1 && courseIndex <= averages.length) {
@@ -290,30 +247,6 @@ public class Main {
             System.out.println("Invalid course index: " + courseIndex);
             return -1; // You can choose a different sentinel value if needed
         }
-    }
-    public static double[] courseAverages(String[][] data) {  // !!!!!!!!!! Fixed here
-        double[] averages = new double[data[0].length - 1];
-        for (int j = 1; j < data[0].length; j++) {
-            double sum = 0;
-            int count = 0;
-            int ngCount = 0;  // !!!!!!!!!!
-            for (int i = 1; i < data.length; i++) {
-                if (data[i][j] != null && !data[i][j].isEmpty()) {
-                    if (data[i][j].equalsIgnoreCase("NG")) {
-                        ngCount++;  //!!!!!!!!!!
-                    } else {
-                        sum += Double.parseDouble(data[i][j]);
-                        count++;
-                    }
-                }
-            }
-            if (1.0 * ngCount / (ngCount + count) > 0.9) {  //!!!!!!!!!!
-                averages[j - 1] = -1;
-            } else {
-                averages[j - 1] = (count == 0) ? 0 : sum / count;
-            }
-        }
-        return averages;
     }
 
     public static double processLalCount(String[][] studentInfo, String[][] grades, int courseIndex, double[] averages) {
@@ -413,8 +346,6 @@ public class Main {
 
         double[] variances = new double[4];
 
-        // SURUNA VALUE
-
         for (int j = 0; j <SurunaValue.length ; j++  ){
 
             avarageSurunaValue = processValuesAverages(studentInfo, grades, "Suruna Value", SurunaValue[j] ,courseIndex);
@@ -427,8 +358,6 @@ public class Main {
         variances[0] = varianceSuruna;
 
         System.out.println("The variance of SurunaValue: " + varianceSuruna);
-
-        // HURNI LEVEL
 
 
         for (int j = 0; j < HurniValue.length; j++){
@@ -444,11 +373,11 @@ public class Main {
 
         System.out.println("The variance of HurniValue: " + varianceHurni);
 
-        // VOLTA VALUE
+
 
         for (int j = 0; j < VoltaValue.length ; j++){
 
-            avarageVoltaValue = processValuesAverages(studentInfo, grades , "Volta", VoltaValue[j], courseIndex);
+            avarageVoltaValue = processValuesAverages(studentInfo, grades , "Volta Value", VoltaValue[j], courseIndex);
 
             double variance = Math.abs(courseAverage - avarageVoltaValue);
 
@@ -458,8 +387,6 @@ public class Main {
         variances[2] = varianceVolta;
 
         System.out.println("The variance of VoltaValue: "+ varianceVolta);
-
-        // LAL COUNT
 
         double varianceLal = processLalCount(studentInfo, grades , courseIndex,averages);
         variances[3] = varianceLal;
@@ -487,6 +414,8 @@ public class Main {
 
 
 }
+
+
 
 
 
