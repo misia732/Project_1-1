@@ -97,7 +97,7 @@ public class Main {
                 // System.out.println(processValuesAverages(studentInfoArray, arrayCurrentGrades, "suruna value", "doot", i));
                 // processLalCount(studentInfoArray, arrayCurrentGrades, "high", i);
                 // processLalCount(studentInfoArray, arrayCurrentGrades, "low", i);
-                bestPrediction(studentInfoArray, arrayCurrentGrades, i, getCourseAverage(arrayCurrentGrades, i))
+                bestPrediction(studentInfoArray, arrayCurrentGrades, i, )
             }
 
 
@@ -387,6 +387,8 @@ public class Main {
         double varianceHurni= 0;
         double varianceVolta= 0;
 
+        double[] variances = new double[4];
+
         for (int j = 0; j <SurunaValue.length ; j++  ){
 
             avarageSurunaValue = processValuesAverages(studentInfo, grades, "Suruna Value", SurunaValue[j] ,courseIndex);
@@ -396,6 +398,7 @@ public class Main {
             SurunaValueSum += variance;
         }
         varianceSuruna = SurunaValueSum / SurunaValue.length;
+        variances[0] = varianceSuruna;
 
         System.out.println("The variance of SurunaValue: " + varianceSuruna);
 
@@ -409,6 +412,7 @@ public class Main {
             HurniValueSum += variance;
         }
         varianceHurni = HurniValueSum / HurniValue.length;
+        variances[1] = varianceHurni;
 
         System.out.println("The variance of HurniValue: " + varianceHurni);
 
@@ -423,13 +427,13 @@ public class Main {
             VoltaValueSum += variance;
         }
         varianceVolta = VoltaValueSum / VoltaValue.length;
+        variances[2] = varianceVolta;
 
         System.out.println("The variance of VoltaValue: "+ varianceVolta);
 
         double varianceLal = processLalCount(studentInfo, grades , courseIndex,averages);
+        variances[3] = varianceLal;
         System.out.println("The variance of lalCount: " + varianceLal);
-
-        double[] variances = {varianceSuruna, varianceHurni, varianceVolta, varianceLal};
 
         double maxVariance = variances[0]; // Initialize maxVariance with the first element of the array
 
