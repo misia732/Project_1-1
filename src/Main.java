@@ -448,7 +448,7 @@ public class Main {
 
         for (int j = 0; j < VoltaValue.length ; j++){
 
-            avarageVoltaValue = processValuesAverages(studentInfo, grades , "Volta Value", VoltaValue[j], courseIndex);
+            avarageVoltaValue = processValuesAverages(studentInfo, grades , "Volta", VoltaValue[j], courseIndex);
 
             double variance = Math.abs(courseAverage - avarageVoltaValue);
 
