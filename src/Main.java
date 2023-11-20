@@ -89,7 +89,7 @@ public class Main {
             i = course index, where 1 = JTE-234, 2 = ATE-003, and so forth.
 
             */
-            for (int i = 1; i < 2; i++) {
+            for (int i = 1; i < 31; i++) {
                 System.out.println();
                 System.out.println("for course " + i);
                 System.out.println("----------------------------------------------");
@@ -403,7 +403,6 @@ public class Main {
             averageLalCount = processLalCount(studentInfo, grades, j, courseIndex);
 
             double varianceReduction = Math.abs(courseAverage - averageLalCount);
-            System.out.println(varianceReduction);
 
             lalCountSum += varianceReduction;
         }
@@ -421,13 +420,13 @@ public class Main {
         }
 
         if (maxVariance == varianceSuruna) {
-            return "The best value to predict with is: Suruna Value" + maxVariance;
+            return "The best value to predict with is: Suruna Value";
         } else if (maxVariance == varianceHurni) {
-            return "The best value to predict with is: Hurni Value: "+ maxVariance;
+            return "The best value to predict with is: Hurni Value";
         } else if (maxVariance == varianceVolta) {
-            return "The best value to predict with is: Volta Value: "+ maxVariance;
+            return "The best value to predict with is: Volta Value";
         } else {
-            return "The best value to predict with is: lal Count: " + maxVariance;
+            return "The best value to predict with is: lal Count";
         }
     }
 
